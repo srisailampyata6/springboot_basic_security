@@ -1,0 +1,121 @@
+# Spring Boot Security: Basic Authentication
+
+## 1. What is Spring Boot Security?
+Spring Boot Security is a framework that provides authentication, authorization, and security features for Spring applications. It simplifies securing web applications by offering pre-built mechanisms for handling user authentication and access control.
+
+### Benefits of Using Spring Security:
+- Provides built-in authentication and authorization.
+- Supports multiple authentication methods (Basic Auth, OAuth, JWT, etc.).
+- Protects applications from common security threats (CSRF, XSS, SQL Injection, etc.).
+- Easily configurable through properties or Java-based configurations.
+
+---
+
+## 2. Dependencies for Spring Security
+To use Spring Security in a Spring Boot application, add the following dependency in your `pom.xml` (for Maven projects):
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+
+For Gradle projects, add:
+```gradle
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+}
+```
+
+When this dependency is added, Spring Security automatically secures all endpoints with Basic Authentication.
+
+---
+
+## 3. Basic Authentication in Spring Security
+Basic Authentication is a simple authentication method where a request must include a username and password in the `Authorization` header. The credentials are encoded using Base64 before being sent.
+
+**Example of Basic Authentication Header:**
+```
+Authorization: Basic Base64(username:password)
+```
+
+
+### Case 1: Default Basic Authentication (Spring Security Defaults)
+When you add Spring Security to your Spring Boot application, it automatically enables Basic Authentication.
+
+#### Behavior:
+- A **default username** (`user`) is provided.
+- A **random password** is generated and printed in the console at application startup.
+- All endpoints are secured, requiring authentication.
+
+#### Steps to Authenticate:
+1. Start the Spring Boot application.
+2. Check the console for the generated password (e.g., `Using generated security password: XYZ123`).
+3. Send a request using **Postman** or **cURL**:
+   - Username: `user`
+   - Password: (Generated password from console)
+4. Example cURL request:
+```sh
+curl -X GET http://localhost:8080/api/data \
+     -H "Authorization: Basic dXNlcjpYWTEyMw=="
+```
+   (`dXNlcjpYWTEyMw==` is Base64 for `user:XYZ123`)
+
+
+### Case 2: Custom Basic Authentication (User-defined Credentials)
+Instead of using Spring Security's default username and password, you can define your own in the `application.properties` file.
+
+#### Configuration in `application.properties`:
+```properties
+spring.security.user.name=srisailam
+spring.security.user.password=Job@123
+```
+
+#### Behavior:
+- Now, authentication requires **srisailam/Job@123** instead of `user` and a generated password.
+- The login form still appears in the browser.
+- You must provide the new credentials in API requests.
+
+#### Authenticate using Postman or cURL:
+```sh
+curl -X GET http://localhost:8080/api/data \
+     -H "Authorization: Basic c3Jpc2FpbGFtOkpvYkAxMjM="
+```
+   (`c3Jpc2FpbGFtOkpvYkAxMjM=` is Base64 for `srisailam:Job@123`)
+
+
+---
+
+## 4. Disabling CSRF for POST, PUT, DELETE Requests
+By default, Spring Security enables **CSRF protection**, which prevents unauthorized POST, PUT, and DELETE requests.
+
+If you need to allow these methods (e.g., for APIs), disable CSRF in the security configuration:
+
+```java
+@Configuration
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()  // Disable CSRF for API calls
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest().authenticated()
+            )
+            .httpBasic(); // Enable Basic Authentication
+        return http.build();
+    }
+}
+```
+
+---
+
+## Conclusion
+- **Spring Security automatically enables Basic Authentication** when added.
+- **Default credentials**: `user` with a generated password (printed in the console).
+- **Custom credentials** can be set in `application.properties`.
+- **POST, PUT, DELETE methods require CSRF to be disabled** when using APIs.
+- **Authorization header format:** `Basic Base64(username:password)`.
+
+Spring Security provides a strong foundation for securing web applications, making authentication and authorization easy to implement. 🚀
+

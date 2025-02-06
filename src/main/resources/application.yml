@@ -1,0 +1,37 @@
+spring:
+  application:
+    name:Spring_Basic_Security
+
+#     Case :2
+
+  security:
+    user:
+      name: srisailam
+      password: Job@123
+
+#when ever you override the default username and password here then the spring security is using the provided
+#username and password to authenticate and authorize the security
+# in this case the spring security will not use the default values to authenticate , it uses the our provided default values in properties file
+
+
+#                      Case: 1
+#    when ever you add the spring security to your spring boot application then it automatically provides
+#    basic authentication with basic security
+
+#    when ever you request throw the browser the default security login form will be loaded
+#    if you send a request through the postman , you have to pass the username and password at the header
+#    go to header section and go to authorization section and select basic authentication go to enter the username and password
+ # here the password will be generated everytime when ever you start the application
+
+#  Basically the default username and password are  "user" , password will be generated at the console
+
+# Basic Auth=Basic base64.encode(username:password)
+
+# when you perform the basic authentication by default csrf attack mechanism will not allow you to the post method
+# it blocks the post , delete and put methods, so you have disabled csrf in security filter chain customization
+
+server:
+  port: 1111
+
+
+

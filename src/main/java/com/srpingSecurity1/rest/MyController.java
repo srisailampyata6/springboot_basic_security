@@ -31,4 +31,10 @@ public class MyController {
         String message="Hello "+"name"+", your request of "+"request"+" has been Successfully accepted";
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
+
+     /*
+        If you want to access these post ,put and delete http methods , you need to disable the csrf 
+
+        if you want to see the how th csrf will be diabled see spring security 2 in my git hub
+    */
 }
